@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using TestApi.Common;
 using TestApi.Data;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("TestApiContextConnection") ?? throw new InvalidOperationException("Connection string 'TestApiContextConnection' not found.");
@@ -28,11 +29,13 @@ builder.Services.AddCors(opt =>
         .AllowCredentials();
     });
 });
+builder.Services.AddHttpForwarder();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
-
+app.UseMicroserviceV2("http://localhost:3000/app");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAuthorization();
